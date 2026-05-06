@@ -1,3 +1,5 @@
+@Library('jenkins-library') _
+
 pipeline {
     agent {
         kubernetes {
@@ -12,32 +14,16 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '20'))
     }
 
-    environment {
-        IMAGE = "harbor.tuxgrid.com/platform/build-sec-base"
-        TAG   = "${env.GIT_COMMIT?.take(7) ?: 'dev'}"
-    }
-
     stages {
         stage('Build & Push') {
             steps {
-                container('kaniko') {
-                    sh """
-                        /kaniko/executor \
-                            --context=dir://\${WORKSPACE} \
-                            --dockerfile=Dockerfile \
-                            --destination=\${IMAGE}:\${TAG} \
-                            --destination=\${IMAGE}:latest \
-                            --cache=true \
-                            --cache-repo=\${IMAGE}/cache
-                    """
+                script {
+                    buildAndPushImage(
+                        image: 'harbor.tuxgrid.com/platform/build-sec-base',
+                        tag:   env.GIT_COMMIT?.take(7) ?: 'dev'
+                    )
                 }
             }
-        }
-    }
-
-    post {
-        success {
-            echo "Built and pushed \${IMAGE}:\${TAG}"
         }
     }
 }
