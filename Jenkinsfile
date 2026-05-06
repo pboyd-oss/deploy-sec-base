@@ -2,7 +2,7 @@ pipeline {
     agent {
         kubernetes {
             cloud 'kubernetes'
-            inheritFrom 'platform-builder'
+            inheritFrom 'kaniko-builder'
         }
     }
 
