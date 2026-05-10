@@ -1,8 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            cloud 'kubernetes'
-            label 'platform-builder'
+            inheritFrom 'build-sec-base-builder'
         }
     }
 
@@ -59,7 +58,7 @@ pipeline {
 
         stage('Sign') {
             steps {
-                container('build-sec-base') {
+                container('skaffold') {
                     withCredentials([
                         string(credentialsId: 'cosign-key', variable: 'COSIGN_PRIVATE_KEY'),
                         usernamePassword(
