@@ -1,12 +1,12 @@
 pipeline {
     agent {
         kubernetes {
-            inheritFrom 'build-sec-base-builder'
+            inheritFrom 'deploy-sec-base-builder'
         }
     }
 
     environment {
-        IMAGE = 'harbor.tuxgrid.com/platform/build-sec-base'
+        IMAGE = 'harbor.tuxgrid.com/platform/deploy-sec-base'
     }
 
     options {
@@ -41,7 +41,7 @@ pipeline {
                                 --snapshot-mode=redo \
                                 --compressed-caching=false \
                                 --cache=true \
-                                --cache-repo=harbor.tuxgrid.com/platform/cache/build-sec-base
+                                --cache-repo=harbor.tuxgrid.com/platform/cache/deploy-sec-base
                         '''
                     }
                 }

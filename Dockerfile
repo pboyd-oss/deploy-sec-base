@@ -8,7 +8,7 @@ FROM harbor.tuxgrid.com/docker.io/python:3.12-slim AS checkov-build
 ARG CHECKOV_VERSION=3.2.285
 RUN pip install --no-cache-dir checkov==${CHECKOV_VERSION}
 
-FROM harbor.tuxgrid.com/platform/base:latest
+FROM harbor.tuxgrid.com/platform/deploy-base:latest
 
 COPY --from=trivy     /usr/local/bin/trivy  /usr/local/bin/trivy
 COPY --from=tfsec     /usr/bin/tfsec        /usr/local/bin/tfsec
