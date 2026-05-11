@@ -20,19 +20,6 @@ pipeline {
     }
 
     stages {
-        stage('Versions') {
-            steps {
-                sh 'git clone --depth 1 --no-tags https://github.com/pboyd-oss/seed-jobs.git _versions'
-                script {
-                    def v = readYaml(file: '_versions/config/platform-versions.yaml').tools
-                    env.TRIVY_VERSION    = v.trivy
-                    env.TFSEC_VERSION    = v.tfsec
-                    env.CHECKOV_VERSION  = v.checkov
-                    env.PYTHON_VERSION   = v.python
-                }
-            }
-        }
-
         stage('Build') {
             steps {
                 container('kaniko') {
