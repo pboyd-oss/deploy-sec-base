@@ -1,8 +1,12 @@
-FROM harbor.tuxgrid.com/ghcr.io/aquasecurity/trivy:0.60.0 AS trivy
-FROM harbor.tuxgrid.com/ghcr.io/aquasecurity/tfsec:v1.28.11 AS tfsec
+ARG TRIVY_VERSION
+FROM harbor.tuxgrid.com/ghcr.io/aquasecurity/trivy:${TRIVY_VERSION} AS trivy
 
-FROM harbor.tuxgrid.com/docker.io/python:3.12-slim AS checkov-build
-ARG CHECKOV_VERSION=3.2.285
+ARG TFSEC_VERSION
+FROM harbor.tuxgrid.com/ghcr.io/aquasecurity/tfsec:${TFSEC_VERSION} AS tfsec
+
+ARG PYTHON_VERSION
+FROM harbor.tuxgrid.com/docker.io/python:${PYTHON_VERSION} AS checkov-build
+ARG CHECKOV_VERSION
 RUN pip install --no-cache-dir checkov==${CHECKOV_VERSION}
 
 FROM harbor.tuxgrid.com/platform/deploy-base:latest

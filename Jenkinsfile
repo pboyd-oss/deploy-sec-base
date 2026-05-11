@@ -20,6 +20,19 @@ pipeline {
     }
 
     stages {
+        stage('Versions') {
+            steps {
+                sh 'git clone --depth 1 --no-tags https://github.com/pboyd-oss/seed-jobs.git _versions'
+                script {
+                    def v = readYaml(file: '_versions/config/platform-versions.yaml').tools
+                    env.TRIVY_VERSION    = v.trivy
+                    env.TFSEC_VERSION    = v.tfsec
+                    env.CHECKOV_VERSION  = v.checkov
+                    env.PYTHON_VERSION   = v.python
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 container('kaniko') {
@@ -35,6 +48,10 @@ pipeline {
                             /kaniko/executor \
                                 --context=dir://. \
                                 --dockerfile=Dockerfile \
+                                --build-arg TRIVY_VERSION=${TRIVY_VERSION} \
+                                --build-arg TFSEC_VERSION=${TFSEC_VERSION} \
+                                --build-arg CHECKOV_VERSION=${CHECKOV_VERSION} \
+                                --build-arg PYTHON_VERSION=${PYTHON_VERSION} \
                                 --destination=${IMAGE}:${GIT_COMMIT:0:7} \
                                 --destination=${IMAGE}:latest \
                                 --digest-file=${WORKSPACE}/image.digest \
