@@ -68,17 +68,19 @@ pipeline {
                             usernameVariable: 'HARBOR_USER',
                             passwordVariable: 'HARBOR_PASS'),
                     ]) {
-                        sh '''
-                            printf '%s' "${COSIGN_PRIVATE_KEY}" > /tmp/cosign.key
-                            chmod 600 /tmp/cosign.key
-                            AUTH=$(printf '%s:%s' "${HARBOR_USER}" "${HARBOR_PASS}" | base64 | tr -d '\n')
-                            mkdir -p ~/.docker
-                            printf '{"auths":{"harbor.tuxgrid.com":{"auth":"%s"}}}' "${AUTH}" \
-                                > ~/.docker/config.json
-                            cosign sign --key /tmp/cosign.key --yes \
-                                "${IMAGE}@${IMAGE_DIGEST}"
-                            rm -f /tmp/cosign.key ~/.docker/config.json
-                        '''
+                        withEnv(['COSIGN_PASSWORD=']) {
+                            sh '''
+                                printf '%s' "${COSIGN_PRIVATE_KEY}" > /tmp/cosign.key
+                                chmod 600 /tmp/cosign.key
+                                AUTH=$(printf '%s:%s' "${HARBOR_USER}" "${HARBOR_PASS}" | base64 | tr -d '\n')
+                                mkdir -p ~/.docker
+                                printf '{"auths":{"harbor.tuxgrid.com":{"auth":"%s"}}}' "${AUTH}" \
+                                    > ~/.docker/config.json
+                                cosign sign --key /tmp/cosign.key --yes \
+                                    "${IMAGE}@${IMAGE_DIGEST}"
+                                rm -f /tmp/cosign.key ~/.docker/config.json
+                            '''
+                        }
                     }
                 }
             }
