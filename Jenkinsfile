@@ -1,7 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            inheritFrom 'deploy-sec-base-builder'
+            inheritFrom 'build-sec-base-builder'
         }
     }
 
