@@ -37,7 +37,9 @@ pipeline {
                                 --dockerfile=Dockerfile \
                                 --destination=${IMAGE}:${GIT_COMMIT:0:7} \
                                 --destination=${IMAGE}:latest \
-                                --digest-file=${WORKSPACE}/image.digest
+                                --digest-file=${WORKSPACE}/image.digest \
+                                --snapshot-mode=redo \
+                                --compressed-caching=false
                         '''
                     }
                 }
