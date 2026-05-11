@@ -39,7 +39,9 @@ pipeline {
                                 --destination=${IMAGE}:latest \
                                 --digest-file=${WORKSPACE}/image.digest \
                                 --snapshot-mode=redo \
-                                --compressed-caching=false
+                                --compressed-caching=false \
+                                --cache=true \
+                                --cache-repo=harbor.tuxgrid.com/platform/cache/build-sec-base
                         '''
                     }
                 }
