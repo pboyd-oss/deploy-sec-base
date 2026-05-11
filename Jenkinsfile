@@ -77,8 +77,7 @@ pipeline {
                             mkdir -p ~/.docker
                             printf '{"auths":{"harbor.tuxgrid.com":{"auth":"%s"}}}' "${AUTH}" \
                                 > ~/.docker/config.json
-                            printf '\n' | cosign sign --key /tmp/cosign.key --yes \
-                                --password-stdin \
+                            COSIGN_PASSWORD="" cosign sign --key /tmp/cosign.key --yes \
                                 "${IMAGE}@${IMAGE_DIGEST}"
                             rm -f /tmp/cosign.key ~/.docker/config.json
                         '''
