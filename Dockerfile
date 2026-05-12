@@ -1,3 +1,6 @@
+ARG SYFT_VERSION
+FROM harbor.tuxgrid.com/ghcr.io/anchore/syft:v${SYFT_VERSION} AS syft
+
 ARG TRIVY_VERSION
 FROM harbor.tuxgrid.com/ghcr.io/aquasecurity/trivy:${TRIVY_VERSION} AS trivy
 
@@ -11,13 +14,15 @@ RUN pip install --no-cache-dir checkov==${CHECKOV_VERSION}
 
 FROM harbor.tuxgrid.com/platform/deploy-base:latest
 
+COPY --from=syft   /syft                /usr/local/bin/syft
 COPY --from=trivy  /usr/local/bin/trivy /usr/local/bin/trivy
 COPY --from=tfsec  /usr/bin/tfsec       /usr/local/bin/tfsec
 COPY --from=checkov-build /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/dist-packages
 COPY --from=checkov-build /usr/local/bin/checkov /usr/local/bin/checkov
 RUN sed -i '1s|.*|#!/usr/bin/python3|' /usr/local/bin/checkov
 
-RUN trivy --version && \
+RUN syft version && \
+    trivy --version && \
     tfsec --version && \
     cosign version && \
     skaffold version && \

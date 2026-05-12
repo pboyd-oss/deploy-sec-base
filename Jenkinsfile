@@ -35,6 +35,7 @@ pipeline {
                             /kaniko/executor \
                                 --context=dir://. \
                                 --dockerfile=Dockerfile \
+                                --build-arg SYFT_VERSION=${SYFT_VERSION:-1.24.1} \
                                 --build-arg TRIVY_VERSION=${TRIVY_VERSION} \
                                 --build-arg TFSEC_VERSION=${TFSEC_VERSION} \
                                 --build-arg CHECKOV_VERSION=${CHECKOV_VERSION} \
