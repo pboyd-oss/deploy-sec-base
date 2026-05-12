@@ -36,9 +36,6 @@ pipeline {
                             /kaniko/executor \
                                 --context=dir://. \
                                 --dockerfile=Dockerfile \
-                                --build-arg "PLATFORM_CA_B64=${PLATFORM_CA_B64}" \
-                                --build-arg HTTPS_PROXY=http://127.0.0.1:8080 \
-                                --build-arg HTTP_PROXY=http://127.0.0.1:8080 \
                                 --build-arg SYFT_VERSION=${SYFT_VERSION} \
                                 --build-arg TRIVY_VERSION=${TRIVY_VERSION} \
                                 --build-arg TFSEC_VERSION=${TFSEC_VERSION} \
