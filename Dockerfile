@@ -9,8 +9,14 @@ FROM harbor.tuxgrid.com/ghcr.io/aquasecurity/tfsec:${TFSEC_VERSION} AS tfsec
 
 ARG PYTHON_VERSION
 FROM harbor.tuxgrid.com/docker.io/python:${PYTHON_VERSION} AS checkov-build
+ARG PLATFORM_CA_B64
+ARG HTTPS_PROXY
+ARG HTTP_PROXY
 ARG CHECKOV_VERSION
-RUN pip install --no-cache-dir checkov==${CHECKOV_VERSION}
+RUN [ -z "$PLATFORM_CA_B64" ] || \
+    (printf '%s' "$PLATFORM_CA_B64" | base64 -d > /usr/local/share/ca-certificates/platform-build.crt \
+    && update-ca-certificates)
+RUN REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt pip install --no-cache-dir checkov==${CHECKOV_VERSION}
 
 FROM harbor.tuxgrid.com/platform/deploy-base:latest
 
