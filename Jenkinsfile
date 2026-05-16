@@ -35,5 +35,6 @@ pipeline {
         stage('Archive')    { steps { script { platformArchive(includeDeps: false) } } }
         stage('Sign')       { steps { script { platformSign(container: 'cosign') } } }
         stage('Provenance') { steps { script { platformBuildProvenance(simple: true, container: 'cosign') } } }
+        stage('Promote')    { steps { script { platformPromote() } } }
     }
 }
